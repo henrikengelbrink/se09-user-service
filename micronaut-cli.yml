@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: se09.user.service
+---
+testFramework: kotlintest
+sourceLanguage: kotlin
