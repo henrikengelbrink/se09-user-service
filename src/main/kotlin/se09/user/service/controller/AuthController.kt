@@ -13,7 +13,6 @@ import se09.user.service.ws.HydraService
 import java.io.File
 import java.lang.Exception
 import java.net.URI
-import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -49,19 +48,29 @@ class AuthController {
     }
 
     @Get(value = "/register")
-    fun getRegister(@QueryValue login_challenge: String, @QueryValue error: String?): HttpResponse<Any> {
+    fun getRegister(
+            @QueryValue login_challenge: String,
+            @QueryValue error: String?,
+            @CookieValue("oauth2_authentication_csrf") csrfCookie: String
+    ): HttpResponse<Any> {
         println("getRegister -> $error")
-        return renderAuth(login_challenge, AuthType.REGISTER, error)
+        return renderAuth(login_challenge, AuthType.REGISTER, error, csrfCookie)
     }
 
     @Get(value = "/login")
-    fun getLogin(@QueryValue login_challenge: String, @QueryValue error: String?): HttpResponse<Any> {
-        println("getLogin -> $error")
-        return renderAuth(login_challenge, AuthType.LOGIN, error)
+    fun getLogin(
+            @QueryValue login_challenge: String,
+            @QueryValue error: String?,
+            @CookieValue("oauth2_authentication_csrf") csrfCookie: String
+    ): HttpResponse<Any> {
+        println("getLogin -> $error # $csrfCookie")
+        return renderAuth(login_challenge, AuthType.LOGIN, error, csrfCookie)
     }
 
     @Get(value = "/consent")
-    fun getConsent(@QueryValue consent_challenge: String): HttpResponse<Any> {
+    fun getConsent(
+            @QueryValue consent_challenge: String
+    ): HttpResponse<Any> {
         println("getConsent")
         val redirect = hydraService.handleConsent(challenge = consent_challenge)
         return HttpResponse.redirect(URI(redirect.redirect_to))
@@ -85,11 +94,12 @@ class AuthController {
         return HttpResponse.redirect(URI(hydraResponse.redirect_to))
     }
 
-    private fun renderAuth(challenge: String, authType: AuthType, errorMessage:String?): HttpResponse<Any> {
+    private fun renderAuth(challenge: String, authType: AuthType, errorMessage:String?, csrfCookie: String): HttpResponse<Any> {
         val loginRequest = hydraService.getLoginRequest(challenge)
+        val response: HttpResponse<Any>
         if (loginRequest.skip) {
             val redirectDTO = hydraService.acceptLoginRequest(loginRequest)
-            return HttpResponse.redirect(URI.create(redirectDTO.redirect_to))
+            response = HttpResponse.redirect(URI.create(redirectDTO.redirect_to))
         } else {
             val loader: ClassPathResourceLoader = ResourceResolver().getLoader(ClassPathResourceLoader::class.java).get()
             val resource = loader.getResource("classpath:views/${authType.value}.html")
@@ -97,15 +107,15 @@ class AuthController {
                 val file = File(resource.get().toURI())
                 var content = file.readText(Charsets.UTF_8)
                 content = content.replace("###CHALLENGE###",challenge)
+                content = content.replace("###CSRF_TOKEN###",csrfCookie)
                 content = content.replace("###ERROR_MESSAGE###", errorMessage ?: "")
-                val response = HttpResponse.ok(content)
+                response = HttpResponse.ok(content)
                 response.headers.add("Content-Type", "text/html")
-                return response as HttpResponse<Any>
             } else {
                 throw Exception()
             }
-
         }
+        return response
     }
 
 }
