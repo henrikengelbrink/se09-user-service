@@ -1,7 +1,6 @@
 version: 2.1
 jobs:
   build-and-push:
-    context: SE09
     executor: docker/docker
     steps:
       - setup_remote_docker
@@ -17,3 +16,4 @@ workflows:
   commit:
     jobs:
       - build-and-push
+          context: SE09
