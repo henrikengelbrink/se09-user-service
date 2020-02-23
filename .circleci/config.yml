@@ -10,9 +10,9 @@ jobs:
       - run:
           name: Build and push Docker image
           command: |
-            docker build -t $DOCKER_USER/se09-user-service:$CIRCLE_BUILD_NUM .
+            docker build -t hengel2810/se09-user-service:$CIRCLE_BUILD_NUM .
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-            docker push $DOCKER_USER/se09-user-service:$CIRCLE_BUILD_NUM
+            docker push hengel2810/se09-user-service:$CIRCLE_BUILD_NUM
 #      - run:
 #          name: Deploy app to Digital Ocean Server via Docker
 #          command: |
