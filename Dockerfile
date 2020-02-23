@@ -10,5 +10,5 @@ RUN gradle clean build -x test
 
 FROM openjdk:8-jre-alpine as docker
 COPY --from=build /home/gradle/build/libs/se09-user-service-*-all.jar se09-user-service.jar
-EXPOSE 8181
+EXPOSE 8080
 CMD java -Dcom.sun.management.jmxremote -noverify ${JAVA_OPTS} -jar se09-user-service.jar
