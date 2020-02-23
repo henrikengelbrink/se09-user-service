@@ -1,13 +1,14 @@
 micronaut:
   application:
+    externalhost: ${EXTERNAL_HOSTNAME}
     name: se09-user-service
   server:
-    port: 8181
+    port: ${PORT:8080}
 datasources:
   default:
-    url: 'jdbc:postgresql://localhost:5432/user-service'
-    username: 'postgres'
-    password: 'postgres'
+    url: ${POSTGRES_HOST}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driverClassName: 'org.postgresql.Driver'
     hikari:
       connection-timeout: 10000
@@ -27,4 +28,7 @@ flyway:
       locations: classpath:databasemigrations
 
 hydra:
-  url: "http://localhost:4445"
+  url:
+    public: ${HYDRA_URL_PUBLIC}
+
+

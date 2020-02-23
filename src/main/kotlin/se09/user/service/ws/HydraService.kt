@@ -1,24 +1,19 @@
 package se09.user.service.ws
 
 import com.beust.klaxon.Klaxon
-import io.micronaut.http.HttpRequest.POST
+import io.micronaut.context.annotation.Value
 import io.micronaut.http.HttpRequest.PUT
-import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.RxHttpClient
-import io.reactivex.Flowable
 import se09.user.service.dto.*
-import java.awt.print.Book
 import java.net.URL
-import java.util.*
 import javax.inject.Singleton
-
 
 @Singleton
 class HydraService {
 
-    //@Value("\${hydra.url.public}")
-    private val hydraPublicUrl: String? = "http://localhost:4445"
+    @Value("\${hydra.url.public}")
+    private lateinit var hydraPublicUrl: String
 
     fun getLoginRequest(challenge: String): HydraLoginRequestDTO {
         println("getLoginRequest")

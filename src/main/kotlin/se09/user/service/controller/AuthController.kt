@@ -1,5 +1,6 @@
 package se09.user.service.controller
 
+import io.micronaut.context.annotation.Value
 import io.micronaut.core.io.ResourceResolver
 import io.micronaut.core.io.scan.ClassPathResourceLoader
 import io.micronaut.http.HttpResponse
@@ -24,6 +25,9 @@ class AuthController {
 
     @Inject
     private lateinit var hydraService: HydraService
+
+    @Value("\${micronaut.application.externalhost}")
+    private lateinit var externalHostname: String
 
     @Post(value = "/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
     fun register(email: String,  password: String, challenge: String): HttpResponse<Any> {
@@ -87,7 +91,7 @@ class AuthController {
             if (authType == AuthType.REGISTER) {
                 errMsg = "userExists"
             }
-            return HttpResponse.redirect(URI("http://localhost:8181/auth/${authType.value}?login_challenge=${loginPayload.challenge}&error=$errMsg"))
+            return HttpResponse.redirect(URI("${externalHostname}/auth/${authType.value}?login_challenge=${loginPayload.challenge}&error=$errMsg"))
         }
 
         val hydraResponse = hydraService.acceptLoginRequest(loginPayload)
