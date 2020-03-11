@@ -30,5 +30,3 @@ flyway:
 hydra:
   url:
     public: ${HYDRA_URL_PUBLIC}
-
-
