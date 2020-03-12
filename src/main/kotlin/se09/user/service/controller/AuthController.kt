@@ -19,6 +19,7 @@ import se09.user.service.ws.HydraService
 import java.io.File
 import java.net.URI
 import java.net.URL
+import java.util.*
 import javax.inject.Inject
 
 
@@ -113,13 +114,13 @@ class AuthController {
             val redirectDTO = hydraService.acceptLoginRequest(loginRequest)
             response = HttpResponse.redirect(URI.create(redirectDTO.redirect_to))
         } else {
-            val loader: ClassPathResourceLoader = ResourceResolver().getLoader(ClassPathResourceLoader::class.java).get()
-            //val resource = loader.getResource("classpath:views/${authType.value}.html")
-            val resource: URL = this.javaClass.getResource("/${authType.value}.html")
+            val loader = ResourceResolver().getLoader(ClassPathResourceLoader::class.java).get()
+            val resource: Optional<URL> = loader.getResource("classpath:views/${authType.value}.html")
+            println(resource.isPresent)
+            println(resource.get().toString())
 
-//            if (true) {
-            println(resource.toURI().toString())
-                val file = File(resource.toURI())
+            if (resource.isPresent) {
+                val file = File(resource.get().toURI())
                 var content = file.readText(Charsets.UTF_8)
                 content = content.replace("###CHALLENGE###", challenge)
 
@@ -136,9 +137,9 @@ class AuthController {
                 response = HttpResponse.ok(content)
                 response.headers.add("Content-Type", "text/html")
                 response.headers.add("Set-Cookie", "oauth2_authentication_csrf=$randomCSRFToken")
-//            } else {
-//                throw Exception()
-//            }
+            } else {
+                throw Exception()
+            }
         }
         return response
     }
