@@ -114,41 +114,23 @@ class AuthController {
             val redirectDTO = hydraService.acceptLoginRequest(loginRequest)
             response = HttpResponse.redirect(URI.create(redirectDTO.redirect_to))
         } else {
-            //val loader = ResourceResolver().getLoader(ClassPathResourceLoader::class.java).get()
-            //val resource: Optional<URL> = loader.getResource("classpath:views/${authType.value}.html")
 
-//            val resource = ResourceResolver().getResource("classpath:views/${authType.value}.html")
-//            println(resource.isPresent)
-//            println(resource.get().toString())
-//            if (resource.isPresent) {
+            var content = javaClass.getResource("/views/${authType.value}.html").readText()
+            content = content.replace("###CHALLENGE###", challenge)
 
-            val fileContent1 = AuthController::class.java.getResource("/views/login.html").readText()
-            val fileContent2 = javaClass.getResource("/views/login.html").readText()
-            println("***** 1 $fileContent1")
-            println("***** 2 $fileContent2")
+            val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+            val randomCSRFToken = (1..10)
+                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                    .map(charPool::get)
+                    .joinToString("")
+            LOG.warn("******* CSRF $randomCSRFToken")
 
-            val uri = URI.create("/${authType.value}.html")
-                println(uri.toString())
-                val file = File(uri)
-                var content = file.readText(Charsets.UTF_8)
-                content = content.replace("###CHALLENGE###", challenge)
+            content = content.replace("###CSRF_TOKEN###",randomCSRFToken)
 
-                val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-                val randomCSRFToken = (1..10)
-                        .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-                        .map(charPool::get)
-                        .joinToString("");
-                LOG.warn("******* CSRF $randomCSRFToken")
-
-                content = content.replace("###CSRF_TOKEN###",randomCSRFToken)
-
-                content = content.replace("###ERROR_MESSAGE###", errorMessage ?: "")
-                response = HttpResponse.ok(content)
-                response.headers.add("Content-Type", "text/html")
-                response.headers.add("Set-Cookie", "oauth2_authentication_csrf=$randomCSRFToken")
-//            } else {
-//                throw Exception()
-//            }
+            content = content.replace("###ERROR_MESSAGE###", errorMessage ?: "")
+            response = HttpResponse.ok(content)
+            response.headers.add("Content-Type", "text/html")
+            response.headers.add("Set-Cookie", "oauth2_authentication_csrf=$randomCSRFToken")
         }
         return response
     }
