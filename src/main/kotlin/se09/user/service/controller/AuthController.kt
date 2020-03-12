@@ -117,12 +117,13 @@ class AuthController {
             //val loader = ResourceResolver().getLoader(ClassPathResourceLoader::class.java).get()
             //val resource: Optional<URL> = loader.getResource("classpath:views/${authType.value}.html")
 
-            val resource = ResourceResolver().getResource("classpath:views/${authType.value}.html")
-
-            println(resource.isPresent)
-            println(resource.get().toString())
-            if (resource.isPresent) {
-                val file = File(resource.get().toURI())
+//            val resource = ResourceResolver().getResource("classpath:views/${authType.value}.html")
+//            println(resource.isPresent)
+//            println(resource.get().toString())
+//            if (resource.isPresent) {
+                val uri = URI.create("jar:file:/se09-user-service.jar/views/${authType.value}.html")
+                println(uri.toString())
+                val file = File(uri)
                 var content = file.readText(Charsets.UTF_8)
                 content = content.replace("###CHALLENGE###", challenge)
 
@@ -139,9 +140,9 @@ class AuthController {
                 response = HttpResponse.ok(content)
                 response.headers.add("Content-Type", "text/html")
                 response.headers.add("Set-Cookie", "oauth2_authentication_csrf=$randomCSRFToken")
-            } else {
-                throw Exception()
-            }
+//            } else {
+//                throw Exception()
+//            }
         }
         return response
     }
