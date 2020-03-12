@@ -57,21 +57,21 @@ class AuthController {
     @Get(value = "/register")
     fun getRegister(
             @QueryValue login_challenge: String,
-            @QueryValue error: String?,
-            @CookieValue("oauth2_authentication_csrf") csrfCookie: String
+            @QueryValue error: String?
+            //@CookieValue("oauth2_authentication_csrf") csrfCookie: String
     ): HttpResponse<Any> {
         LOG.warn("getRegister -> $error")
-        return renderAuth(login_challenge, AuthType.REGISTER, error, csrfCookie)
+        return renderAuth(login_challenge, AuthType.REGISTER, error, "csrfCookie")
     }
 
     @Get(value = "/login")
     fun getLogin(
             @QueryValue login_challenge: String,
-            @QueryValue error: String?,
-            @CookieValue("oauth2_authentication_csrf") csrfCookie: String
+            @QueryValue error: String?
+            //@CookieValue("oauth2_authentication_csrf") csrfCookie: String
     ): HttpResponse<Any> {
-        LOG.warn("getLogin -> $error # $csrfCookie")
-        return renderAuth(login_challenge, AuthType.LOGIN, error, csrfCookie)
+        LOG.warn("getLogin -> $error # ")
+        return renderAuth(login_challenge, AuthType.LOGIN, error, "csrfCookie")
     }
 
     @Get(value = "/consent")
