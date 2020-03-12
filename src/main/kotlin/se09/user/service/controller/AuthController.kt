@@ -121,7 +121,7 @@ class AuthController {
 //            println(resource.isPresent)
 //            println(resource.get().toString())
 //            if (resource.isPresent) {
-                val uri = URI.create("jar:file:/se09-user-service.jar/views/${authType.value}.html")
+                val uri = URI.create("/${authType.value}.html")
                 println(uri.toString())
                 val file = File(uri)
                 var content = file.readText(Charsets.UTF_8)
