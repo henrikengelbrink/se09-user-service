@@ -99,6 +99,7 @@ class AuthController {
     }
 
     private fun renderAuth(challenge: String, authType: AuthType, errorMessage:String?, csrfCookie: String): HttpResponse<Any> {
+        println("####### INPUT CSRF: $csrfCookie")
         val loginRequest = hydraService.getLoginRequest(challenge)
         val response: HttpResponse<Any>
         if (loginRequest.skip) {
@@ -110,11 +111,21 @@ class AuthController {
             if (resource.isPresent) {
                 val file = File(resource.get().toURI())
                 var content = file.readText(Charsets.UTF_8)
-                content = content.replace("###CHALLENGE###",challenge)
-                content = content.replace("###CSRF_TOKEN###",csrfCookie)
+                content = content.replace("###CHALLENGE###", challenge)
+
+                val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+                val randomCSRFToken = (1..10)
+                        .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                        .map(charPool::get)
+                        .joinToString("");
+                println("******* CSRF $randomCSRFToken")
+
+                content = content.replace("###CSRF_TOKEN###",randomCSRFToken)
+
                 content = content.replace("###ERROR_MESSAGE###", errorMessage ?: "")
                 response = HttpResponse.ok(content)
                 response.headers.add("Content-Type", "text/html")
+                response.headers.add("Set-Cookie", "oauth2_authentication_csrf=$randomCSRFToken")
             } else {
                 throw Exception()
             }
