@@ -114,11 +114,13 @@ class AuthController {
             val redirectDTO = hydraService.acceptLoginRequest(loginRequest)
             response = HttpResponse.redirect(URI.create(redirectDTO.redirect_to))
         } else {
-            val loader = ResourceResolver().getLoader(ClassPathResourceLoader::class.java).get()
-            val resource: Optional<URL> = loader.getResource("classpath:views/${authType.value}.html")
+            //val loader = ResourceResolver().getLoader(ClassPathResourceLoader::class.java).get()
+            //val resource: Optional<URL> = loader.getResource("classpath:views/${authType.value}.html")
+
+            val resource = ResourceResolver().getResource("classpath:views/${authType.value}.html")
+
             println(resource.isPresent)
             println(resource.get().toString())
-
             if (resource.isPresent) {
                 val file = File(resource.get().toURI())
                 var content = file.readText(Charsets.UTF_8)
