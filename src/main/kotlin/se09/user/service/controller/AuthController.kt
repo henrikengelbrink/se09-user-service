@@ -12,8 +12,9 @@ import se09.user.service.exceptions.APIException
 import se09.user.service.services.UserService
 import se09.user.service.ws.HydraService
 import java.io.File
-import java.lang.Exception
 import java.net.URI
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.inject.Inject
 
 
@@ -29,9 +30,11 @@ class AuthController {
     @Value("\${micronaut.application.externalhost}")
     private lateinit var externalHostname: String
 
+    private val LOG: Logger = LoggerFactory.getLogger(AuthController::class.java)
+
     @Post(value = "/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
     fun register(email: String,  password: String, challenge: String): HttpResponse<Any> {
-        println("register")
+        LOG.info("register")
         val dto = LoginPayloadDTO(
                 email = email,
                 password = password,
@@ -42,7 +45,7 @@ class AuthController {
 
     @Post(value = "/login", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
     fun login(email: String,  password: String, challenge: String): HttpResponse<Any> {
-        println("login")
+        LOG.info("login")
         val dto = LoginPayloadDTO(
                 email = email,
                 password = password,
@@ -57,7 +60,7 @@ class AuthController {
             @QueryValue error: String?,
             @CookieValue("oauth2_authentication_csrf") csrfCookie: String
     ): HttpResponse<Any> {
-        println("getRegister -> $error")
+        LOG.info("getRegister -> $error")
         return renderAuth(login_challenge, AuthType.REGISTER, error, csrfCookie)
     }
 
@@ -67,7 +70,7 @@ class AuthController {
             @QueryValue error: String?,
             @CookieValue("oauth2_authentication_csrf") csrfCookie: String
     ): HttpResponse<Any> {
-        println("getLogin -> $error # $csrfCookie")
+        LOG.info("getLogin -> $error # $csrfCookie")
         return renderAuth(login_challenge, AuthType.LOGIN, error, csrfCookie)
     }
 
@@ -75,7 +78,7 @@ class AuthController {
     fun getConsent(
             @QueryValue consent_challenge: String
     ): HttpResponse<Any> {
-        println("getConsent")
+        LOG.info("getConsent")
         val redirect = hydraService.handleConsent(challenge = consent_challenge)
         return HttpResponse.redirect(URI(redirect.redirect_to))
     }
@@ -99,7 +102,7 @@ class AuthController {
     }
 
     private fun renderAuth(challenge: String, authType: AuthType, errorMessage:String?, csrfCookie: String): HttpResponse<Any> {
-        println("####### INPUT CSRF: $csrfCookie")
+        LOG.info("####### INPUT CSRF: $csrfCookie")
         val loginRequest = hydraService.getLoginRequest(challenge)
         val response: HttpResponse<Any>
         if (loginRequest.skip) {
@@ -118,7 +121,7 @@ class AuthController {
                         .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
                         .map(charPool::get)
                         .joinToString("");
-                println("******* CSRF $randomCSRFToken")
+                LOG.info("******* CSRF $randomCSRFToken")
 
                 content = content.replace("###CSRF_TOKEN###",randomCSRFToken)
 
