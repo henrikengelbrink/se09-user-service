@@ -30,3 +30,6 @@ flyway:
 hydra:
   url:
     public: ${HYDRA_URL_PUBLIC}
+logging:
+  level:
+    ROOT: DEBUG
