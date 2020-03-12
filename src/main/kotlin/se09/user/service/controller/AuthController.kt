@@ -5,7 +5,12 @@ import io.micronaut.core.io.ResourceResolver
 import io.micronaut.core.io.scan.ClassPathResourceLoader
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.*
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.QueryValue
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import se09.user.service.dto.AuthType
 import se09.user.service.dto.LoginPayloadDTO
 import se09.user.service.exceptions.APIException
@@ -13,8 +18,7 @@ import se09.user.service.services.UserService
 import se09.user.service.ws.HydraService
 import java.io.File
 import java.net.URI
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.net.URL
 import javax.inject.Inject
 
 
@@ -110,9 +114,12 @@ class AuthController {
             response = HttpResponse.redirect(URI.create(redirectDTO.redirect_to))
         } else {
             val loader: ClassPathResourceLoader = ResourceResolver().getLoader(ClassPathResourceLoader::class.java).get()
-            val resource = loader.getResource("classpath:views/${authType.value}.html")
-            if (resource.isPresent) {
-                val file = File(resource.get().toURI())
+            //val resource = loader.getResource("classpath:views/${authType.value}.html")
+            val resource: URL = this.javaClass.getResource("/${authType.value}.html")
+
+//            if (true) {
+            println(resource.toURI().toString())
+                val file = File(resource.toURI())
                 var content = file.readText(Charsets.UTF_8)
                 content = content.replace("###CHALLENGE###", challenge)
 
@@ -129,9 +136,9 @@ class AuthController {
                 response = HttpResponse.ok(content)
                 response.headers.add("Content-Type", "text/html")
                 response.headers.add("Set-Cookie", "oauth2_authentication_csrf=$randomCSRFToken")
-            } else {
-                throw Exception()
-            }
+//            } else {
+//                throw Exception()
+//            }
         }
         return response
     }
