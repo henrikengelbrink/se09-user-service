@@ -19,6 +19,7 @@ import se09.user.service.services.UserService
 import se09.user.service.ws.HydraService
 import java.net.URI
 import javax.inject.Inject
+import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
@@ -39,7 +40,7 @@ class AuthController {
 
     @Post(value = "/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
     fun register(
-            @NotBlank email: String,
+            @NotBlank @Email email: String,
             @Size(min = 10, max = 64, message = "Password should have at least 10 chars") @NotBlank password: String,
             @NotBlank challenge: String
     ): HttpResponse<Any> {
@@ -54,7 +55,7 @@ class AuthController {
 
     @Post(value = "/login", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
     fun login(
-            @NotBlank email: String,
+            @NotBlank @Email email: String,
             @Size(min = 10, max = 64, message = "Password should have at least 10 chars") @NotBlank password: String,
             @NotBlank challenge: String
     ): HttpResponse<Any> {
@@ -103,13 +104,13 @@ class AuthController {
                 AuthType.REGISTER -> userService.registerUser(loginPayload)
             }
         } catch (e: APIException) {
-            var errMsg = "unknownUser"
-            if (authType == AuthType.REGISTER) {
-                errMsg = "userExists"
-            }
+//            var errMsg = "unknownUser"
+//            if (authType == AuthType.REGISTER) {
+//                errMsg = "userExists"
+//            }
+            val errMsg = "Unknown error"
             return HttpResponse.redirect(URI("${externalHostname}/auth/${authType.value}?login_challenge=${loginPayload.challenge}&error=$errMsg"))
         }
-
         val hydraResponse = hydraService.acceptLoginRequest(loginPayload)
         return HttpResponse.redirect(URI(hydraResponse.redirect_to))
     }
