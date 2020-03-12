@@ -33,3 +33,5 @@ hydra:
 logging:
   level:
     ROOT: DEBUG
+  io.micronaut.http.client: INFO
+  io.micronaut.http.server: INFO

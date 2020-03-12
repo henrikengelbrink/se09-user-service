@@ -34,7 +34,7 @@ class AuthController {
 
     @Post(value = "/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
     fun register(email: String,  password: String, challenge: String): HttpResponse<Any> {
-        LOG.info("register")
+        LOG.warn("register")
         val dto = LoginPayloadDTO(
                 email = email,
                 password = password,
@@ -45,7 +45,7 @@ class AuthController {
 
     @Post(value = "/login", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
     fun login(email: String,  password: String, challenge: String): HttpResponse<Any> {
-        LOG.info("login")
+        LOG.warn("login")
         val dto = LoginPayloadDTO(
                 email = email,
                 password = password,
@@ -60,7 +60,7 @@ class AuthController {
             @QueryValue error: String?,
             @CookieValue("oauth2_authentication_csrf") csrfCookie: String
     ): HttpResponse<Any> {
-        LOG.info("getRegister -> $error")
+        LOG.warn("getRegister -> $error")
         return renderAuth(login_challenge, AuthType.REGISTER, error, csrfCookie)
     }
 
@@ -70,7 +70,7 @@ class AuthController {
             @QueryValue error: String?,
             @CookieValue("oauth2_authentication_csrf") csrfCookie: String
     ): HttpResponse<Any> {
-        LOG.info("getLogin -> $error # $csrfCookie")
+        LOG.warn("getLogin -> $error # $csrfCookie")
         return renderAuth(login_challenge, AuthType.LOGIN, error, csrfCookie)
     }
 
@@ -78,7 +78,7 @@ class AuthController {
     fun getConsent(
             @QueryValue consent_challenge: String
     ): HttpResponse<Any> {
-        LOG.info("getConsent")
+        LOG.warn("getConsent")
         val redirect = hydraService.handleConsent(challenge = consent_challenge)
         return HttpResponse.redirect(URI(redirect.redirect_to))
     }
@@ -102,7 +102,7 @@ class AuthController {
     }
 
     private fun renderAuth(challenge: String, authType: AuthType, errorMessage:String?, csrfCookie: String): HttpResponse<Any> {
-        LOG.info("####### INPUT CSRF: $csrfCookie")
+        LOG.warn("####### INPUT CSRF: $csrfCookie")
         val loginRequest = hydraService.getLoginRequest(challenge)
         val response: HttpResponse<Any>
         if (loginRequest.skip) {
@@ -121,7 +121,7 @@ class AuthController {
                         .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
                         .map(charPool::get)
                         .joinToString("");
-                LOG.info("******* CSRF $randomCSRFToken")
+                LOG.warn("******* CSRF $randomCSRFToken")
 
                 content = content.replace("###CSRF_TOKEN###",randomCSRFToken)
 
