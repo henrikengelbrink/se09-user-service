@@ -9,6 +9,7 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.annotation.QueryValue
+import io.micronaut.validation.Validated
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import se09.user.service.dto.AuthType
@@ -16,13 +17,12 @@ import se09.user.service.dto.LoginPayloadDTO
 import se09.user.service.exceptions.APIException
 import se09.user.service.services.UserService
 import se09.user.service.ws.HydraService
-import java.io.File
 import java.net.URI
-import java.net.URL
-import java.util.*
 import javax.inject.Inject
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Size
 
-
+@Validated
 @Controller("/auth")
 class AuthController {
 
@@ -38,7 +38,11 @@ class AuthController {
     private val LOG: Logger = LoggerFactory.getLogger(AuthController::class.java)
 
     @Post(value = "/register", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
-    fun register(email: String,  password: String, challenge: String): HttpResponse<Any> {
+    fun register(
+            @NotBlank email: String,
+            @Size(min = 10, max = 64, message = "Password should have at least 10 chars") @NotBlank password: String,
+            @NotBlank challenge: String
+    ): HttpResponse<Any> {
         LOG.warn("register")
         val dto = LoginPayloadDTO(
                 email = email,
@@ -49,7 +53,11 @@ class AuthController {
     }
 
     @Post(value = "/login", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
-    fun login(email: String,  password: String, challenge: String): HttpResponse<Any> {
+    fun login(
+            @NotBlank email: String,
+            @Size(min = 10, max = 64, message = "Password should have at least 10 chars") @NotBlank password: String,
+            @NotBlank challenge: String
+    ): HttpResponse<Any> {
         LOG.warn("login")
         val dto = LoginPayloadDTO(
                 email = email,
