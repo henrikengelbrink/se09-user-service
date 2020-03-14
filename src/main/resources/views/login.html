@@ -2,11 +2,10 @@
 <html>
 <head>
     <title>Login to your Account</title>
-    <link rel="stylesheet" href="/styles/app.css">
 </head>
 <body>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <form action="/auth/login" method="POST">
+    <form action="###EXTERNAL_HOSTNAME###/auth/login" method="POST">
         <div class="container" id="login">
             <h1>Login</h1>
             <p>Please enter your credentials to login.</p>
@@ -33,7 +32,7 @@
             </div>
         </div>
     </form>
-    <form action="/auth/register" method="GET">
+    <form action="###EXTERNAL_HOSTNAME###/auth/register" method="GET">
         <div class="clearfix">
             <input type="hidden" name="login_challenge" value="###CHALLENGE###">
             <button type="submit" class="accountButton">New? Create account</button>

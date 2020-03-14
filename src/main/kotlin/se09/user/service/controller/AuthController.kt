@@ -127,19 +127,20 @@ class AuthController {
             var content = javaClass.getResource("/views/${authType.value}.html").readText()
             content = content.replace("###CHALLENGE###", challenge)
 
-            val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-            val randomCSRFToken = (1..10)
-                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
-                    .map(charPool::get)
-                    .joinToString("")
-            LOG.warn("******* CSRF $randomCSRFToken")
+//            val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+//            val randomCSRFToken = (1..10)
+//                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+//                    .map(charPool::get)
+//                    .joinToString("")
+//            LOG.warn("******* CSRF $randomCSRFToken")
 
-            content = content.replace("###CSRF_TOKEN###",randomCSRFToken)
+//            content = content.replace("###CSRF_TOKEN###", randomCSRFToken)
+            content = content.replace("###EXTERNAL_HOSTNAME###", externalHostname)
 
             content = content.replace("###ERROR_MESSAGE###", errorMessage ?: "")
             response = HttpResponse.ok(content)
             response.headers.add("Content-Type", "text/html")
-            response.headers.add("Set-Cookie", "oauth2_authentication_csrf=$randomCSRFToken")
+//            response.headers.add("Set-Cookie", "oauth2_authentication_csrf=$randomCSRFToken")
         }
         return response
     }
