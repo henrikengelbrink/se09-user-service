@@ -2,6 +2,7 @@ package se09.user.service.ws
 
 import com.beust.klaxon.Klaxon
 import io.micronaut.context.annotation.Value
+import io.micronaut.http.HttpRequest.POST
 import io.micronaut.http.HttpRequest.PUT
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.RxHttpClient
@@ -61,6 +62,20 @@ class HydraService {
         LOG.info("handleConsent")
         val consentRequestDTO = getConsentRequest(challenge)
         return acceptConsentRequest(consentRequestDTO)
+    }
+
+    fun introspectToken(token: String): HydraIntrospectDTO {
+        LOG.info("introspectToken")
+        val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
+
+        val payload = mapOf(
+                "token" to token
+        )
+        val response = httpClient.toBlocking().exchange(
+                POST("/oauth2/introspect", payload).contentType(MediaType.APPLICATION_FORM_URLENCODED),
+                HydraIntrospectDTO::class.java
+        )
+        return response.body()!!
     }
 
     private fun getConsentRequest(challenge: String): HydraConsentRequestDTO {
