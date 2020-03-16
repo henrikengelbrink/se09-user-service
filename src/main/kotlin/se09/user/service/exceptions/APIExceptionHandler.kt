@@ -17,8 +17,9 @@ class APIExceptionHandler : ExceptionHandler<APIException, HttpResponse<Any>> {
 
     private val LOG: Logger = LoggerFactory.getLogger(APIExceptionHandler::class.java)
 
+    @Override
     override fun handle(request: HttpRequest<Any>, exception: APIException): HttpResponse<Any> {
-        LOG.info("########### APIException ${exception.code.name} ${exception.code.httpCode.code}")
+        LOG.warn("########### APIException ${exception.code.name} ${exception.code.httpCode.code}")
         return HttpResponse.status(exception.code.httpCode)
     }
 
