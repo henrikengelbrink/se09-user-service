@@ -17,6 +17,9 @@ class HydraService {
     @Value("\${hydra.url.public}")
     private lateinit var hydraPublicUrl: String
 
+    @Value("\${hydra.url.admin}")
+    private lateinit var hydraAdminUrl: String
+
     private val LOG: Logger = LoggerFactory.getLogger(HydraService::class.java)
 
     fun getLoginRequest(challenge: String): HydraLoginRequestDTO {

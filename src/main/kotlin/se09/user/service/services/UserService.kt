@@ -22,18 +22,11 @@ class UserService {
         if (user != null) {
             throw APIException(APIExceptionCode.USER_ALREADY_EXISTS)
         }
-//        val random = SecureRandom()
-//        val salt = ByteArray(24)
-//        random.nextBytes(salt)
-//        val md = MessageDigest.getInstance("SHA-512")
-//        md.update(salt)
-//        val hashedPassword = md.digest(loginPayload.password.toByteArray(StandardCharsets.UTF_8))
         val hashedPassword: String = BCrypt.withDefaults().hashToString(12, loginPayload.password.toCharArray())
 
         user = User(
                 email = loginPayload.email,
-                hashedPassword = hashedPassword,
-                salt = ""//salt.toString()
+                hashedPassword = hashedPassword
         )
         user = userRepository.save(user)
         return UserResponseDTO(
@@ -55,6 +48,11 @@ class UserService {
                 id = user.id.toString(),
                 email = user.email
         )
+    }
+
+    fun userIdByEmail(email: String): String {
+        val user = userRepository.findByEmail(email) ?: throw APIException(APIExceptionCode.UNKNOWN_USER)
+        return user.id.toString()
     }
 
 

@@ -7,6 +7,5 @@ import javax.persistence.*
 class User(
         val email: String = "",
         @Column(name = "hashed_password")
-        var hashedPassword: String = "",
-        var salt: String = ""
+        var hashedPassword: String = ""
 ): BaseEntity()

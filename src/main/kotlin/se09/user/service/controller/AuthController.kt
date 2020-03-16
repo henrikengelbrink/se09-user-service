@@ -5,14 +5,12 @@ import io.micronaut.core.io.ResourceResolver
 import io.micronaut.core.io.scan.ClassPathResourceLoader
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Post
-import io.micronaut.http.annotation.QueryValue
+import io.micronaut.http.annotation.*
 import io.micronaut.validation.Validated
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import se09.user.service.dto.AuthType
+import se09.user.service.dto.AuthenticationSessionDTO
 import se09.user.service.dto.LoginPayloadDTO
 import se09.user.service.exceptions.APIException
 import se09.user.service.services.UserService
@@ -95,6 +93,17 @@ class AuthController {
         LOG.warn("getConsent")
         val redirect = hydraService.handleConsent(challenge = consent_challenge)
         return HttpResponse.redirect(URI(redirect.redirect_to))
+    }
+
+    @Post(value = "/hydrator")
+    fun postHydrator(
+        @Body dto: AuthenticationSessionDTO
+    ): HttpResponse<Any> {
+        LOG.warn("hydrator ${dto.subject}")
+        val userId = userService.userIdByEmail(dto.subject)
+        LOG.warn(userId)
+        dto.header["X-User-Id"] = userId
+        return HttpResponse.ok(dto)
     }
 
     private fun authenticate(loginPayload: LoginPayloadDTO, authType: AuthType): HttpResponse<Any> {
