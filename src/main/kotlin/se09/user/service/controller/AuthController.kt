@@ -102,7 +102,11 @@ class AuthController {
         LOG.warn("hydrator ${dto.subject}")
         val userId = userService.userIdByEmail(dto.subject)
         LOG.warn(userId)
-        dto.header["X-User-Id"] = userId
+        if (userId != null) {
+            dto.header["X-User-Id"] = userId
+        } else {
+            LOG.warn("hydrator - user not found ${dto.subject}")
+        }
         return HttpResponse.ok(dto)
     }
 

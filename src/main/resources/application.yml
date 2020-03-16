@@ -29,7 +29,6 @@ flyway:
 
 hydra:
   url:
-    public: ${HYDRA_URL_PUBLIC}
     admin: ${HYDRA_URL_ADMIN}
 logging:
   level:

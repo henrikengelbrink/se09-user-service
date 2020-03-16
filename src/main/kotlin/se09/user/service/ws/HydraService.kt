@@ -14,9 +14,6 @@ import javax.inject.Singleton
 @Singleton
 class HydraService {
 
-    @Value("\${hydra.url.public}")
-    private lateinit var hydraPublicUrl: String
-
     @Value("\${hydra.url.admin}")
     private lateinit var hydraAdminUrl: String
 
@@ -24,7 +21,7 @@ class HydraService {
 
     fun getLoginRequest(challenge: String): HydraLoginRequestDTO {
         LOG.info("getLoginRequest")
-        val httpClient = RxHttpClient.create(URL(hydraPublicUrl))
+        val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraRequestEndpoint(challenge, HydraRequestType.LOGIN)
         val response = httpClient.toBlocking().retrieve(endpoint)
         val jsonResponse = Klaxon().parse<HydraLoginRequestDTO>(response)
@@ -33,7 +30,7 @@ class HydraService {
 
     fun acceptLoginRequest(dto: HydraLoginRequestDTO): HydraRedirectDTO {
         LOG.info("acceptLoginRequest HydraLoginRequestDTO")
-        val httpClient = RxHttpClient.create(URL(hydraPublicUrl))
+        val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraAcceptRequestEndpoint(dto.challenge, HydraRequestType.LOGIN)
 
         val response = httpClient.toBlocking().exchange(
@@ -45,7 +42,7 @@ class HydraService {
 
     fun acceptLoginRequest(dto: LoginPayloadDTO): HydraRedirectDTO {
         LOG.info("acceptLoginRequest LoginPayloadDTO")
-        val httpClient = RxHttpClient.create(URL(hydraPublicUrl))
+        val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraAcceptRequestEndpoint(dto.challenge, HydraRequestType.LOGIN)
 
         val payload = HydraAcceptLoginRequestPayloadDTO(
@@ -68,7 +65,7 @@ class HydraService {
 
     private fun getConsentRequest(challenge: String): HydraConsentRequestDTO {
         LOG.info("getConsentRequest")
-        val httpClient = RxHttpClient.create(URL(hydraPublicUrl))
+        val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraRequestEndpoint(challenge, HydraRequestType.CONSENT)
         val response = httpClient.toBlocking().retrieve(endpoint)
         val jsonResponse = Klaxon().parse<HydraConsentRequestDTO>(response)
@@ -77,7 +74,7 @@ class HydraService {
 
     private fun acceptConsentRequest(dto: HydraConsentRequestDTO): HydraRedirectDTO {
         LOG.info("acceptConsentRequest")
-        val httpClient = RxHttpClient.create(URL(hydraPublicUrl))
+        val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraAcceptRequestEndpoint(dto.challenge, HydraRequestType.CONSENT)
 
         val response = httpClient.toBlocking().exchange(
