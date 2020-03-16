@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 
 @Produces
 @Singleton
-@Requires(classes = [Exception::class, ExceptionHandler::class])
+@Requires(classes = [APIException::class, ExceptionHandler::class])
 class APIExceptionHandler : ExceptionHandler<APIException, HttpResponse<Any>> {
 
     private val LOG: Logger = LoggerFactory.getLogger(APIExceptionHandler::class.java)

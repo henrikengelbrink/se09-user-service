@@ -121,7 +121,7 @@ class AuthController {
 //            if (authType == AuthType.REGISTER) {
 //                errMsg = "userExists"
 //            }
-            val errMsg = "Unknown error"
+            val errMsg = "UnknownError"
             return HttpResponse.redirect(URI("${externalHostname}/auth/${authType.value}?login_challenge=${loginPayload.challenge}&error=$errMsg"))
         }
         val hydraResponse = hydraService.acceptLoginRequest(loginPayload)
