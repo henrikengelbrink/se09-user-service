@@ -101,7 +101,10 @@ class AuthController {
     ): HttpResponse<Any> {
         LOG.warn("hydrator ${dto.subject}")
         val introspectResult = hydraService.introspectToken(dto.subject)
-        val userId = userService.userIdByEmail(introspectResult.sub)
+        var userId: String? = null
+        if (introspectResult.active && introspectResult.sub != null) {
+            userId = userService.userIdByEmail(introspectResult.sub!!)
+        }
         LOG.warn(userId)
         if (userId != null) {
             dto.header["X-User-Id"] = userId
