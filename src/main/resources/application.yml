@@ -4,6 +4,8 @@ micronaut:
     name: se09-user-service
   server:
     port: ${PORT:8080}
+    netty:
+      log-level: DEBUG
 datasources:
   default:
     url: ${POSTGRES_HOST}
