@@ -113,7 +113,7 @@ class AuthController {
         } else {
             LOG.warn("hydrator - user not found ${dto.subject}")
         }
-        LOG.warn(dto.header.get("X-User-Id") as String)
+        dto.extra["foo"] = "bar"
         return HttpResponse.ok(dto)
     }
 
