@@ -12,7 +12,7 @@ abstract class BaseEntity {
 
     @Id
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @GeneratedValue
+    @GeneratedValue(generator = "uuid")
     @Type(type="pg-uuid")
     open lateinit var id: UUID
 
