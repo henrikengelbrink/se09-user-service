@@ -1,9 +1,11 @@
 package se09.user.service.services
 
+import se09.user.service.dto.MQTTRegisterDTO
 import se09.user.service.dto.UserClientResponseDTO
 import se09.user.service.models.UserClient
 import se09.user.service.repositories.UserClientRepository
 import se09.user.service.ws.CertService
+import se09.user.service.ws.HydraService
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
@@ -17,6 +19,9 @@ class UserClientService {
 
     @Inject
     private lateinit var userService: UserService
+
+    @Inject
+    private lateinit var hydraService: HydraService
 
     @Inject
     private lateinit var userClientRepository: UserClientRepository
@@ -36,6 +41,22 @@ class UserClientService {
             )
         } else {
             throw Exception()
+        }
+    }
+    fun mqttLoginValid(dto: MQTTRegisterDTO): Boolean {
+        val introspectResult = hydraService.introspectToken(dto.password)
+        val email = introspectResult.sub
+        return if (introspectResult.active && email != null) {
+            val optionalUserClient = userClientRepository.findById(UUID.fromString(dto.username))
+            return if (optionalUserClient.isPresent) {
+                val userId = userService.userIdByEmail(introspectResult.sub!!)
+                val userClient = optionalUserClient.get()
+                userClient.userId.toString() == userId
+            } else {
+                false
+            }
+        } else {
+            false
         }
     }
 
