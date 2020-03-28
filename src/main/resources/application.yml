@@ -12,7 +12,7 @@ datasources:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driverClassName: 'org.postgresql.Driver'
-    maximumPoolSize: 4
+    maximumPoolSize: 3
     minimumIdle: 2
 jpa:
   default:
