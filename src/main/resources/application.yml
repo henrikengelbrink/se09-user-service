@@ -36,3 +36,7 @@ logging:
     ROOT: DEBUG
   io.micronaut.http.client: INFO
   io.micronaut.http.server: INFO
+
+service:
+  url:
+    cert: ${CERT_SERVICE_URL}

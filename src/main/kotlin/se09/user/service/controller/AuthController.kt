@@ -1,19 +1,16 @@
 package se09.user.service.controller
 
 import io.micronaut.context.annotation.Value
-import io.micronaut.core.io.ResourceResolver
-import io.micronaut.core.io.scan.ClassPathResourceLoader
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import io.micronaut.validation.Validated
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import se09.user.service.dto.AuthType
-import se09.user.service.dto.AuthenticationSessionDTO
-import se09.user.service.dto.LoginPayloadDTO
+import se09.user.service.dto.*
 import se09.user.service.exceptions.APIException
 import se09.user.service.services.UserService
+import se09.user.service.ws.CertService
 import se09.user.service.ws.HydraService
 import java.net.URI
 import javax.inject.Inject
