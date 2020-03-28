@@ -31,9 +31,9 @@ class UserController {
     ): HttpResponse<Any> {
         LOG.warn("createUserClient")
         val token = authHeader.substringAfter(" ")
-        val userId = hydraService.introspectToken(token).sub
-        return if (userId != null) {
-            val dto  = userClientService.createUserClient(userId)
+        val userMail = hydraService.introspectToken(token).sub
+        return if (userMail != null) {
+            val dto  = userClientService.createUserClient(userMail)
             HttpResponse.ok(dto)
         } else {
             HttpResponse.unauthorized()
