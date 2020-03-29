@@ -43,6 +43,16 @@ class UserClientService {
             throw Exception()
         }
     }
+
+    fun userIdForClient(clientId: String): String? {
+        val optionalUserClient = userClientRepository.findById(UUID.fromString(clientId))
+        return if (optionalUserClient.isPresent) {
+            optionalUserClient.get().userId.toString()
+        } else {
+            null
+        }
+    }
+
     fun mqttLoginValid(dto: MQTTRegisterDTO): Boolean {
         val introspectResult = hydraService.introspectToken(dto.password)
         val email = introspectResult.sub

@@ -40,4 +40,18 @@ class UserController {
         }
     }
 
+    @Get(value = "/client/{clientId}")
+    fun getUserFromClient(
+            @PathVariable clientId: String
+    ): HttpResponse<String> {
+        LOG.warn("getUserFromClient")
+        val userId = userClientService.userIdForClient(clientId)
+        LOG.warn("getUserFromClient $userId")
+        return if (userId != null) {
+            HttpResponse.ok(userId)
+        } else {
+            HttpResponse.notFound()
+        }
+    }
+
 }
