@@ -5,6 +5,8 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import io.micronaut.validation.Validated
+import se09.user.service.exceptions.APIException
+import se09.user.service.exceptions.APIExceptionCode
 import se09.user.service.services.UserClientService
 import se09.user.service.ws.HydraService
 import javax.inject.Inject
@@ -41,6 +43,7 @@ class UserController {
     fun getUserFromClient(
             @PathVariable clientId: String
     ): HttpResponse<String> {
+        throw APIException(APIExceptionCode.UNKNOWN_USER)
         val userId = userClientService.userIdForClient(clientId)
         return if (userId != null) {
             HttpResponse.ok(userId)
