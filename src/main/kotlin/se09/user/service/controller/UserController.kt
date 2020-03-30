@@ -5,11 +5,11 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import io.micronaut.validation.Validated
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import se09.user.service.services.UserClientService
 import se09.user.service.ws.HydraService
 import javax.inject.Inject
+
+
 @Validated
 @Controller("/users")
 class UserController {
@@ -23,13 +23,10 @@ class UserController {
     @Value("\${micronaut.application.externalhost}")
     private lateinit var externalHostname: String
 
-    private val LOG: Logger = LoggerFactory.getLogger(UserController::class.java)
-
     @Post(value = "/client", consumes = [MediaType.APPLICATION_FORM_URLENCODED])
     fun createUserClient(
             @Header(value = "Authorization") authHeader: String
     ): HttpResponse<Any> {
-        LOG.warn("createUserClient")
         val token = authHeader.substringAfter(" ")
         val userMail = hydraService.introspectToken(token).sub
         return if (userMail != null) {
@@ -44,9 +41,7 @@ class UserController {
     fun getUserFromClient(
             @PathVariable clientId: String
     ): HttpResponse<String> {
-        LOG.warn("getUserFromClient")
         val userId = userClientService.userIdForClient(clientId)
-        LOG.warn("getUserFromClient $userId")
         return if (userId != null) {
             HttpResponse.ok(userId)
         } else {

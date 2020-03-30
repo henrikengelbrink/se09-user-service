@@ -51,12 +51,16 @@ class UserService {
     }
 
     fun userIdByEmail(email: String): String? {
-        var userId: String? = null
+        val userId: String?
         try {
-            val user = userRepository.findByEmail(email) ?: throw APIException(APIExceptionCode.UNKNOWN_USER)
-            userId = user.id.toString()
+            val user = userRepository.findByEmail(email)
+            if (user != null) {
+                userId = user!!.id.toString()
+            } else {
+                throw APIException(APIExceptionCode.UNKNOWN_USER)
+            }
         } catch (e: Exception) {
-
+            throw APIException(APIExceptionCode.UNKNOWN_USER)
         }
         return userId
     }

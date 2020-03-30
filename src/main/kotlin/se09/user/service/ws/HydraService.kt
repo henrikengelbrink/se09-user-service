@@ -6,11 +6,7 @@ import io.micronaut.http.HttpRequest.POST
 import io.micronaut.http.HttpRequest.PUT
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.RxHttpClient
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import se09.user.service.dto.*
-import se09.user.service.exceptions.APIException
-import se09.user.service.exceptions.APIExceptionCode
 import java.net.URL
 import javax.inject.Singleton
 
@@ -20,10 +16,7 @@ class HydraService {
     @Value("\${hydra.url.admin}")
     private lateinit var hydraAdminUrl: String
 
-    private val LOG: Logger = LoggerFactory.getLogger(HydraService::class.java)
-
     fun getLoginRequest(challenge: String): HydraLoginRequestDTO {
-        LOG.info("getLoginRequest")
         val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraRequestEndpoint(challenge, HydraRequestType.LOGIN)
         val response = httpClient.toBlocking().retrieve(endpoint)
@@ -32,7 +25,6 @@ class HydraService {
     }
 
     fun acceptLoginRequest(dto: HydraLoginRequestDTO): HydraRedirectDTO {
-        LOG.info("acceptLoginRequest HydraLoginRequestDTO")
         val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraAcceptRequestEndpoint(dto.challenge, HydraRequestType.LOGIN)
 
@@ -44,7 +36,6 @@ class HydraService {
     }
 
     fun acceptLoginRequest(dto: LoginPayloadDTO): HydraRedirectDTO {
-        LOG.info("acceptLoginRequest LoginPayloadDTO")
         val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraAcceptRequestEndpoint(dto.challenge, HydraRequestType.LOGIN)
 
@@ -61,14 +52,11 @@ class HydraService {
     }
 
     fun handleConsent(challenge: String): HydraRedirectDTO {
-        LOG.info("handleConsent")
         val consentRequestDTO = getConsentRequest(challenge)
         return acceptConsentRequest(consentRequestDTO)
     }
 
     fun introspectToken(token: String): HydraIntrospectDTO {
-        throw APIException(APIExceptionCode.USER_ALREADY_EXISTS)
-        LOG.info("introspectToken")
         val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
 
         val payload = mapOf(
@@ -82,7 +70,6 @@ class HydraService {
     }
 
     private fun getConsentRequest(challenge: String): HydraConsentRequestDTO {
-        LOG.info("getConsentRequest")
         val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraRequestEndpoint(challenge, HydraRequestType.CONSENT)
         val response = httpClient.toBlocking().retrieve(endpoint)
@@ -91,7 +78,6 @@ class HydraService {
     }
 
     private fun acceptConsentRequest(dto: HydraConsentRequestDTO): HydraRedirectDTO {
-        LOG.info("acceptConsentRequest")
         val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
         val endpoint = getHydraAcceptRequestEndpoint(dto.challenge, HydraRequestType.CONSENT)
 
