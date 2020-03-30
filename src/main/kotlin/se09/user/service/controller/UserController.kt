@@ -43,7 +43,6 @@ class UserController {
     fun getUserFromClient(
             @PathVariable clientId: String
     ): HttpResponse<String> {
-        throw APIException(APIExceptionCode.UNKNOWN_USER)
         val userId = userClientService.userIdForClient(clientId)
         return if (userId != null) {
             HttpResponse.ok(userId)
