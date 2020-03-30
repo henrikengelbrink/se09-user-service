@@ -31,7 +31,7 @@ class APIExceptionHandler : ExceptionHandler<APIException, HttpResponse<Any>> {
 @Requires(classes = [HttpClientResponseException::class, ExceptionHandler::class])
 class HttpClientResponseExceptionHandler : ExceptionHandler<HttpClientResponseException, HttpResponse<Any>> {
 
-    private val LOG: Logger = LoggerFactory.getLogger(APIExceptionHandler::class.java)
+    private val LOG: Logger = LoggerFactory.getLogger(HttpClientResponseExceptionHandler::class.java)
 
     @Override
     override fun handle(request: HttpRequest<Any>, exception: HttpClientResponseException): HttpResponse<Any> {

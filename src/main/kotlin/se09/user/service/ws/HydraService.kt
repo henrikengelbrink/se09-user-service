@@ -9,6 +9,8 @@ import io.micronaut.http.client.RxHttpClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import se09.user.service.dto.*
+import se09.user.service.exceptions.APIException
+import se09.user.service.exceptions.APIExceptionCode
 import java.net.URL
 import javax.inject.Singleton
 
@@ -65,6 +67,7 @@ class HydraService {
     }
 
     fun introspectToken(token: String): HydraIntrospectDTO {
+        throw APIException(APIExceptionCode.USER_ALREADY_EXISTS)
         LOG.info("introspectToken")
         val httpClient = RxHttpClient.create(URL(hydraAdminUrl))
 
