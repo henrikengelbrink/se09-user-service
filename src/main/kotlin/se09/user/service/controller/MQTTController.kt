@@ -4,8 +4,8 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import se09.user.service.dto.MQTTRegisterDTO
-import se09.user.service.exceptions.GlobalLogger
 import se09.user.service.services.UserClientService
+import se09.user.service.utils.GlobalLogger
 import javax.inject.Inject
 
 @Controller("/mqtt")
@@ -19,7 +19,7 @@ class MQTTController {
             @Body body: MQTTRegisterDTO
     ): HttpResponse<Any> {
         val valid = userClientService.mqttLoginValid(body)
-        GlobalLogger.log(mapOf(
+        GlobalLogger.info(mapOf(
                 "event" to "/mqtt/register",
                 "value" to valid
         ))

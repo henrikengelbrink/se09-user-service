@@ -1,14 +1,12 @@
 package se09.user.service.exceptions
 
-import com.beust.klaxon.Klaxon
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.http.server.exceptions.ExceptionHandler;
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import se09.user.service.utils.GlobalLogger
 import javax.inject.Singleton;
 
 @Produces
@@ -18,7 +16,7 @@ class APIExceptionHandler : ExceptionHandler<APIException, HttpResponse<Any>> {
 
     @Override
     override fun handle(request: HttpRequest<Any>, exception: APIException): HttpResponse<Any> {
-        GlobalLogger.log(mapOf(
+        GlobalLogger.error(mapOf(
                 "exception" to exception::class.java.name,
                 "code" to exception.code.name
         ))
@@ -34,26 +32,11 @@ class HttpClientResponseExceptionHandler : ExceptionHandler<HttpClientResponseEx
 
     @Override
     override fun handle(request: HttpRequest<Any>, exception: HttpClientResponseException): HttpResponse<Any> {
-        GlobalLogger.log(mapOf(
+        GlobalLogger.error(mapOf(
                 "exception" to exception::class.java.name,
                 "status" to exception.status
         ))
         return HttpResponse.status(exception.status)
-    }
-
-}
-
-class GlobalLogger {
-
-    companion object {
-
-        private val log: Logger = LoggerFactory.getLogger("jsonLogger")
-
-        fun log(jsonLog: Map<String, Any>) {
-            val result = Klaxon().toJsonString(jsonLog)
-            log.error(result)
-        }
-
     }
 
 }
