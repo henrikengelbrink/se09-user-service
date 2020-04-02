@@ -18,7 +18,7 @@ class APIExceptionHandler : ExceptionHandler<APIException, HttpResponse<Any>> {
 
     @Override
     override fun handle(request: HttpRequest<Any>, exception: APIException): HttpResponse<Any> {
-        ExceptionLogger.log(mapOf(
+        GlobalLogger.log(mapOf(
                 "exception" to exception::class.java.name,
                 "code" to exception.code.name
         ))
@@ -34,7 +34,7 @@ class HttpClientResponseExceptionHandler : ExceptionHandler<HttpClientResponseEx
 
     @Override
     override fun handle(request: HttpRequest<Any>, exception: HttpClientResponseException): HttpResponse<Any> {
-        ExceptionLogger.log(mapOf(
+        GlobalLogger.log(mapOf(
                 "exception" to exception::class.java.name,
                 "status" to exception.status
         ))
@@ -43,7 +43,7 @@ class HttpClientResponseExceptionHandler : ExceptionHandler<HttpClientResponseEx
 
 }
 
-class ExceptionLogger {
+class GlobalLogger {
 
     companion object {
 
