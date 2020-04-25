@@ -7,6 +7,7 @@ import se09.user.service.exceptions.APIException
 import se09.user.service.exceptions.APIExceptionCode
 import se09.user.service.models.User
 import se09.user.service.repositories.UserRepository
+import se09.user.service.ws.HibpService
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,12 +17,19 @@ class UserService {
     @Inject
     private lateinit var userRepository: UserRepository
 
+    @Inject
+    private lateinit var hibpService: HibpService
+
     fun registerUser(loginPayload: LoginPayloadDTO): UserResponseDTO {
         loginPayload.validate()
         var user = userRepository.findByEmail(loginPayload.email)
         if (user != null) {
             throw APIException(APIExceptionCode.USER_ALREADY_EXISTS)
         }
+        if (!hibpService.passwordValid(loginPayload.password)) {
+            throw APIException(APIExceptionCode.PASSWORD_PAWNED)
+        }
+
         val hashedPassword: String = BCrypt.withDefaults().hashToString(12, loginPayload.password.toCharArray())
 
         user = User(

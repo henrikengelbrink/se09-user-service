@@ -40,3 +40,4 @@ logging:
 service:
   url:
     cert: ${CERT_SERVICE_URL}
+    hibp: ${HIBP_SERVICE_URL}
