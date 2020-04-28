@@ -34,6 +34,7 @@ dependencies {
     compile "io.micronaut.data:micronaut-data-hibernate-jpa"
     implementation "io.micronaut.configuration:micronaut-jdbc-hikari"
 
+    compile 'io.sentry:sentry:1.7.30'
     implementation 'org.postgresql:postgresql:42.2.4'
     compile 'io.micronaut.configuration:micronaut-flyway'
     compile 'io.micronaut:micronaut-http-client'
