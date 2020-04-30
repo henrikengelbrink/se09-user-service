@@ -12,9 +12,9 @@ data class LoginPayloadDTO(
 
 
     fun validate() {
-//        if(!Regex.PASSWORD_REGEX.toRegex().matches(password)) {
-//            throw APIException(APIExceptionCode.INVALID_PASSWORD_FORMAT)
-//        }
+        if(!Regex.PASSWORD_REGEX.toRegex().matches(password)) {
+            throw APIException(APIExceptionCode.INVALID_PASSWORD_FORMAT)
+        }
     }
 
 }
